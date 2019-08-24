@@ -13,10 +13,10 @@ TagManager:
   - UI
   - 
   - 
-  - 
-  - 
-  - 
-  - 
+  - P1
+  - P2
+  - GameWorld
+  - Projectile
   - 
   - 
   - 
@@ -40,4 +40,16 @@ TagManager:
   m_SortingLayers:
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: P1
+    uniqueID: 3004140141
+    locked: 0
+  - name: P2
+    uniqueID: 2830438149
+    locked: 0
+  - name: Objects
+    uniqueID: 3171597261
+    locked: 0
+  - name: Dialog
+    uniqueID: 3017968081
     locked: 0
