@@ -12,7 +12,7 @@ public class Microbe : MonoBehaviour
     public ControlSetting controlSetting;
     public MicrobeSetting microbeSetting;
 
-    private Transform aim;
+    private Transform aim, lightSpot;
     private Animator animator;
 
     private Dictionary<EffectType, Effect> effectList;
@@ -44,6 +44,8 @@ public class Microbe : MonoBehaviour
         this.microbeSetting = microbeSetting;
 
         camera = GameObject.Find("CameraP" + id.ToString()).GetComponent<Camera>();
+        lightSpot = camera.transform.GetChild(1);
+        lightSpot.localPosition = new Vector3(0, 10, 10);
 
         pause = false;
     }
@@ -83,21 +85,25 @@ public class Microbe : MonoBehaviour
     {
         if (Input.GetKey(controlSetting.Up))
         {
+            lightSpot.localPosition = new Vector3(0, 10, 10);
             direction.x = 0;
             direction.y += 1;
         }
         if (Input.GetKey(controlSetting.Down))
         {
+            lightSpot.localPosition = new Vector3(0, -10, 10);
             direction.x = 0;
             direction.y -= 1;
         }
         if (Input.GetKey(controlSetting.Right))
         {
+            lightSpot.localPosition = new Vector3(10, 0, 10);
             direction.y = 0;
             direction.x += 1;
         }
         if (Input.GetKey(controlSetting.Left))
         {
+            lightSpot.localPosition = new Vector3(-10, 0, 10);
             direction.y = 0;
             direction.x -= 1;
         }
@@ -160,12 +166,13 @@ public class Microbe : MonoBehaviour
 
         if (effect.Type == EffectType.Score)
         {
-            int point = effect.IsPositive ? (int)effect.Amount : (int)-effect.Amount;
+            int point = effect.IsPositive ? (int)effect.Amount : (int)(-effect.Amount);
             GameObject.Find("BattleManager").GetComponent<BattleManager>().AddPoint(id, point);
-            return;
         }
-
-        effectList[effect.Type] = effect;
+        else
+        {
+            effectList[effect.Type] = effect;
+        }
     }
 
     private void UpdateEffects()
@@ -187,10 +194,10 @@ public class Microbe : MonoBehaviour
 
     private bool GetEffect(EffectType type, out bool isPositive, out float amount)
     {
-        if (effectList.ContainsKey(EffectType.ShootDistance))
+        if (effectList.ContainsKey(type))
         {
-            amount = effectList[EffectType.ShootDistance].Amount;
-            isPositive = effectList[EffectType.ShootDistance].IsPositive;
+            amount = effectList[type].Amount;
+            isPositive = effectList[type].IsPositive;
             return true;
         }
         else

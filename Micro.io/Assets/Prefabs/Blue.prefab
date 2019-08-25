@@ -44,6 +44,7 @@ GameObject:
   - component: {fileID: 7201613132681330032}
   - component: {fileID: 7201613132681330031}
   - component: {fileID: 7201613132681330030}
+  - component: {fileID: 6834239481369992384}
   m_Layer: 10
   m_Name: Blue
   m_TagString: Microbe
@@ -197,3 +198,19 @@ MonoBehaviour:
   camera: {fileID: 0}
   controlSetting: {fileID: 11400000, guid: 2e02fd4f4c45b9640a28cf4f975ca0e4, type: 2}
   microbeSetting: {fileID: 11400000, guid: e9db615e23c38b842bd6dd082ae2fc5d, type: 2}
+--- !u!114 &6834239481369992384
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7201613132681330027}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 66bf9bd6d526e6441ae7b2dc8eeaffb2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  propSetting: {fileID: 11400000, guid: 45987d0b6ddcb7440ada3d31a1de8f91, type: 2}
+  spawnRangeMin: 6
+  spawnRangeMax: 10
+  triggerSpawningPeriod: 2

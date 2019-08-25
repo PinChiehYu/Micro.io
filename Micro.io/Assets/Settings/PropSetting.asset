@@ -23,11 +23,11 @@ MonoBehaviour:
   - {fileID: 7400000, guid: 002289c023e397e4691831ef3ef2388c, type: 2}
   - {fileID: 7400000, guid: 0425b5867efd7a64880cb26565e795ba, type: 2}
   EffectRanges:
-  - Min: 0.2
-    Max: 0.4
-  - Min: 100
-    Max: 250
-  - Min: 0.2
+  - Min: 0.15
+    Max: 0.2
+  - Min: 50
+    Max: 100
+  - Min: 0.3
     Max: 0.5
   - Min: 0.5
     Max: 0.5

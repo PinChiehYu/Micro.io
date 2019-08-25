@@ -84,6 +84,6 @@ public class GameManager
             }
         }
 
-        Debug.Log("Winner ID:" + Winner.ToString());
+        //Debug.Log("Winner ID:" + Winner.ToString() + PlayerScores[0].ToString() + ", " + PlayerScores[1].ToString()); 
     }
 }

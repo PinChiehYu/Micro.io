@@ -12,9 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5669a322cfb061a46bea16fbfdf1c9ff, type: 3}
   m_Name: P2Setting
   m_EditorClassIdentifier: 
-  Controller: 2
-  Up: 119
-  Down: 115
-  Left: 97
-  Right: 100
-  Fire: 32
+  Up: 116
+  Down: 103
+  Left: 102
+  Right: 104
+  Fire: 122

@@ -10,6 +10,8 @@ public class Projectile : MonoBehaviour
 
     [SerializeField]
     private Sprite bang;
+    [SerializeField]
+    private AudioClip bangSE;
     private bool hit = false;
 
     // Update is called once per frame
@@ -33,11 +35,11 @@ public class Projectile : MonoBehaviour
             return;
         }
 
-        int target = Int32.Parse(col.name);
+        int target = col.name[0] - '0';
         if (target != Owner)
         {
             GameObject.Find("BattleManager").GetComponent<BattleManager>().ProjectileHit(Owner, target);
-            StartCoroutine(HitEffect(transform.position));
+            StartCoroutine(HitEffect());
         }
     }
 
@@ -47,10 +49,11 @@ public class Projectile : MonoBehaviour
         Destroy(gameObject);
     }
 
-    private IEnumerator HitEffect(Vector3 hitPoint)
+    private IEnumerator HitEffect()
     {
         hit = true;
         GetComponent<SpriteRenderer>().sprite = bang;
+        GetComponent<AudioSource>().PlayOneShot(bangSE);
         yield return new WaitForSeconds(0.5f);
         Destroy(gameObject);
     }

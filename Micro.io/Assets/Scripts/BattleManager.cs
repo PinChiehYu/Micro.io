@@ -44,9 +44,9 @@ public class BattleManager : MonoBehaviour
     {
         InstantiateCharacters();
 
-        for (int id = 1; id <= playerNum; id++)
+        for (int id = 0; id < playerNum; id++)
         {
-            scoreTexts[id - 1] = GameObject.Find("Score_P" + id.ToString()).GetComponent<Text>();
+            scoreTexts[id] = GameObject.Find("Score_P" + id.ToString()).GetComponent<Text>();
         }
 
         timerText = GameObject.Find("Timer").GetComponent<Text>();
@@ -59,7 +59,7 @@ public class BattleManager : MonoBehaviour
             int charId = GameManager.Instance.PlayerChar[id];
             Microbe microbe = Instantiate(characterList[charId], new Vector3(5 * (id * 2 - 1), 0, 0), Quaternion.identity).GetComponent<Microbe>();
             microbe.Initialize(id, controlSettingList[id], microbeSettingList[charId]);
-            microbe.name = id.ToString();
+            microbe.name = id.ToString() + charId.ToString();
         }
     }
 
@@ -91,7 +91,7 @@ public class BattleManager : MonoBehaviour
 
     private void InstantiateProp()
     {
-        Vector3 position = Vector3.forward;
+        Vector3 position = Vector3.zero;
         float bind = arenaSize - 5; // 5 is for margin
         do
         {
@@ -99,6 +99,7 @@ public class BattleManager : MonoBehaviour
             position.y = Random.Range(-bind, bind);
         }
         while (position.magnitude > bind);
+        position.z = 1f;
 
         int type = Random.Range(0, 4);
         int positive = Random.Range(0, 2);
@@ -146,10 +147,10 @@ public class BattleManager : MonoBehaviour
 
     private void ResetScore()
     {
-        for (int id = 1; id <= playerNum; id++)
+        for (int id = 0; id < playerNum; id++)
         {
-            playerScores[id - 1] = 0;
-            scoreTexts[id - 1].text = "0";
+            playerScores[id] = 0;
+            scoreTexts[id].text = "0";
         }
     }
 

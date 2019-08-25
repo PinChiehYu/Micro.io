@@ -166,7 +166,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   camera: {fileID: 0}
   controlSetting: {fileID: 11400000, guid: 2e02fd4f4c45b9640a28cf4f975ca0e4, type: 2}
-  microbeSetting: {fileID: 11400000, guid: e9db615e23c38b842bd6dd082ae2fc5d, type: 2}
+  microbeSetting: {fileID: 11400000, guid: 814a40af1dfd85a4d8600b14a1b6a854, type: 2}
 --- !u!1 &1713141367693060198
 GameObject:
   m_ObjectHideFlags: 0

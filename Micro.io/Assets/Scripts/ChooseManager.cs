@@ -15,6 +15,14 @@ public class ChooseManager : MonoBehaviour
     private int[] selectionIndex;
     private bool[] isReady;
     private Animator[] animators;
+    private AudioSource[] audioSources;
+
+    [SerializeField]
+    private AudioClip switchClip;
+    [SerializeField]
+    private AudioClip lockClip;
+    [SerializeField]
+    private AudioClip unlockClip;
 
     private bool isWaiting;
     private bool isFinish;
@@ -31,6 +39,7 @@ public class ChooseManager : MonoBehaviour
         selectionFrame = new Transform[2];
         animators = new Animator[2];
         isReady = new bool[2];
+        audioSources = new AudioSource[2];
 
         isWaiting = false;
         isFinish = false;
@@ -47,6 +56,7 @@ public class ChooseManager : MonoBehaviour
         {
             selectionFrame[id] = GameObject.Find("SelectionP" + id.ToString()).transform;
             animators[id] = selectionFrame[id].GetComponent<Animator>();
+            audioSources[id] = selectionFrame[id].GetComponent<AudioSource>();
             isReady[id] = false;
 
             ChangeCharacter(id, 0);
@@ -70,10 +80,12 @@ public class ChooseManager : MonoBehaviour
         if (!isReady[id] && Input.GetKeyDown(controlSetting[id].Left))
         {
             ChangeCharacter(id, -1);
+            audioSources[id].PlayOneShot(switchClip);
         }
         else if (!isReady[id] && Input.GetKeyDown(controlSetting[id].Right))
         {
             ChangeCharacter(id, 1);
+            audioSources[id].PlayOneShot(switchClip);
         }
         else if (Input.GetKeyDown(controlSetting[id].Fire))
         {
@@ -81,10 +93,12 @@ public class ChooseManager : MonoBehaviour
             if (isReady[id])
             {
                 animators[id].Play("lock");
+                audioSources[id].PlayOneShot(lockClip);
             }
             else
             {
                 animators[id].Play("select");
+                audioSources[id].PlayOneShot(unlockClip);
                 isWaiting = false;
                 timer.transform.parent.localScale = Vector3.zero;
             }
@@ -93,6 +107,7 @@ public class ChooseManager : MonoBehaviour
 
     private void ChangeCharacter(int id, int dir)
     {
+
         selectionIndex[id] = (selectionIndex[id] + dir + charNumber) % charNumber;
         selectionFrame[id].position = charPivot[selectionIndex[id]];
     }

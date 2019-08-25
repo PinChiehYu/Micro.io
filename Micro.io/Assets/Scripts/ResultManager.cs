@@ -13,34 +13,36 @@ public class ResultManager : MonoBehaviour
 
     private void Start()
     {
-        winner = 2; //= GameManager.Instance.Winner;
+        winner = GameManager.Instance.Winner;
         p1Anim = GameObject.Find("p1").GetComponent<Animator>();
         p2Anim = GameObject.Find("p2").GetComponent<Animator>();
         UI = GameObject.Find("Canvas");
         UI.SetActive(false);
 
-        Vector3 tmp = p2Anim.transform.localScale;
-        p2Anim.transform.localScale = new Vector3(-tmp.x, tmp.y, tmp.z);
+        Vector3 tmp = p1Anim.transform.localScale;
+        p1Anim.transform.localScale = new Vector3(-tmp.x, tmp.y, tmp.z);
 
         //play anim depending character
-        p1Anim.Play("yee");
-        p2Anim.Play("yee");
+        p1Anim.Play(GameManager.Instance.PlayerChar[0].ToString());
+        p2Anim.Play(GameManager.Instance.PlayerChar[1].ToString());
 
-        if (winner == 1)
-        {
-            p1Anim.SetFloat("result", 0);
-            p2Anim.SetFloat("result", 1);
-        }
         if (winner == 2)
-        {
-            p1Anim.SetFloat("result", 1);
-            p2Anim.SetFloat("result", 0);
-        }
-        if (winner == 3)
         {
             p1Anim.SetFloat("result", 2);
             p2Anim.SetFloat("result", 2);
         }
+
+        if (winner == 0)
+        {
+            p1Anim.SetFloat("result", 0);
+            p2Anim.SetFloat("result", 1);
+        }
+        if (winner == 1)
+        {
+            p1Anim.SetFloat("result", 1);
+            p2Anim.SetFloat("result", 0);
+        }
+        
         StartCoroutine(Countdown(timer));
     }
 
@@ -48,5 +50,13 @@ public class ResultManager : MonoBehaviour
     {
         yield return new WaitForSeconds(timer);
         UI.SetActive(true);
+        if (winner == 2)
+        {
+            GameObject.Find("Win").transform.localScale = Vector3.zero;
+        }
+        else
+        {
+            GameObject.Find("Draw").transform.localScale = Vector3.zero;
+        }
     }
 }

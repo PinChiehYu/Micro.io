@@ -33,6 +33,8 @@ public class Prop : MonoBehaviour
     {
         if (isPrepared && col.gameObject.CompareTag("Microbe"))
         {
+            if (!effect.IsPositive && (col.name[1] - '0') == 0) return;
+
             col.gameObject.GetComponent<Microbe>().ReceiveEffects(effect);
             Destroy(gameObject);
         }
