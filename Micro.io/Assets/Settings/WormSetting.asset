@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6fd5cba7c43ef5a4483d894f09cffdf4, type: 3}
   m_Name: WormSetting
   m_EditorClassIdentifier: 
-  MoveSpeed: 1
-  RotateSpeed: 0.5
+  MoveSpeed: 6
+  RotateSpeed: 1
   Projectile: {fileID: 237947937632671374, guid: 6e3ee2650e5ba8843a76d281e40ade36,
     type: 3}
-  FireCooldown: 0.5
+  ReloadSpeed: 2

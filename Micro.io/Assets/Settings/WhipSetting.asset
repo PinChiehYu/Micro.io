@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6fd5cba7c43ef5a4483d894f09cffdf4, type: 3}
   m_Name: WhipSetting
   m_EditorClassIdentifier: 
-  MoveSpeed: 2
+  MoveSpeed: 9
   RotateSpeed: 1
   Projectile: {fileID: 237947937632671374, guid: 6e3ee2650e5ba8843a76d281e40ade36,
     type: 3}
-  FireCooldown: 0.5
+  ReloadSpeed: 1

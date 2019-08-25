@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5669a322cfb061a46bea16fbfdf1c9ff, type: 3}
   m_Name: P1Setting
   m_EditorClassIdentifier: 
+  Controller: 1
   Up: 273
   Down: 274
   Left: 276

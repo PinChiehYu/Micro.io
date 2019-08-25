@@ -9,6 +9,5 @@ public class MicrobeSetting : ScriptableObject
     public float RotateSpeed;
 
     public GameObject Projectile;
-    public float FireCooldown;
-
+    public float ReloadSpeed;
 }

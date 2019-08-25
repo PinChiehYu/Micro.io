@@ -1,44 +1,131 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class BattleManager : MonoBehaviour
 {
-    // Start is called before the first frame update
-    public int P1_score = 0, P2_score = 0;
-    public int maxTiming;
-    private Text P1_score_text, P2_score_text, timer_text;
-    private float timer;
+    private const int playerNum = 2;
+    public int arenaSize;
+
+    [SerializeField]
+    private int maxTiming = 90;
+
+    [SerializeField]
+    private List<GameObject> characterList;
+
+    [SerializeField]
+    private List<ControlSetting> controlSettingList;
+    [SerializeField]
+    private List<MicrobeSetting> microbeSettingList;
+    [SerializeField]
+    private PropSetting propSetting;
+
+    private int[] playerScores;
+    private float countdownTimer;
+    private float propTimer;
 
     private bool endBattle;
 
+    private Text[] scoreTexts;
+    private Text timerText;
+
     void Awake()
     {
+        Random.InitState(System.Guid.NewGuid().GetHashCode());
+        playerScores = new int[playerNum];
+        scoreTexts = new Text[playerNum];
         endBattle = false;
-        timer = 0;
+        countdownTimer = maxTiming;
+        propTimer = 0;
     }
 
     void Start()
     {
-        P1_score_text = GameObject.Find("P1_Score").GetComponent<Text>();
-        P2_score_text = GameObject.Find("P2_Score").GetComponent<Text>();
-        timer_text = GameObject.Find("Timer").GetComponent<Text>();
+        InstantiateCharacters();
+
+        for (int id = 1; id <= playerNum; id++)
+        {
+            scoreTexts[id - 1] = GameObject.Find("Score_P" + id.ToString()).GetComponent<Text>();
+        }
+
+        timerText = GameObject.Find("Timer").GetComponent<Text>();
     }
 
-    // Update is called once per frame
-    void Update()
+    private void InstantiateCharacters()
     {
-        if (timer <= 0f && !endBattle)
+        for (int id = 0; id < playerNum; id++)
         {
-            timer = 0f;
+            int charId = GameManager.Instance.PlayerChar[id];
+            Microbe microbe = Instantiate(characterList[charId], new Vector3(5 * (id * 2 - 1), 0, 0), Quaternion.identity).GetComponent<Microbe>();
+            microbe.Initialize(id, controlSettingList[id], microbeSettingList[charId]);
+            microbe.name = id.ToString();
+        }
+    }
+
+    private void Update()
+    {
+        UpdateUI();
+        CreateProp();
+        UpdateTimer();
+    }
+
+    private void UpdateUI()
+    {
+        for (int id = 0; id < playerNum; id++)
+        {
+            scoreTexts[id].text = playerScores[id].ToString();
+        }
+    }
+
+    private void CreateProp()
+    {
+        propTimer += Time.deltaTime;
+        float poss = countdownTimer > (maxTiming / 2) ? 0.5f : 0.9f;
+        if (propTimer > 0.5f && poss <= Random.Range(0f, 1f))
+        {
+            propTimer = 0f;
+            InstantiateProp();
+        }
+    }
+
+    private void InstantiateProp()
+    {
+        Vector3 position = Vector3.forward;
+        float bind = arenaSize - 5; // 5 is for margin
+        do
+        {
+            position.x = Random.Range(-bind, bind);
+            position.y = Random.Range(-bind, bind);
+        }
+        while (position.magnitude > bind);
+
+        int type = Random.Range(0, 4);
+        int positive = Random.Range(0, 2);
+        Effect effect = new Effect
+        {
+            Type = (EffectType)type,
+            IsPositive = positive < 1,
+            Amount = Random.Range(propSetting.EffectRanges[type].Min, propSetting.EffectRanges[type].Max),
+            RemainTiming = Random.Range(3f, 11f)
+        };
+
+        GameObject prop = Instantiate(propSetting.Prefab, position, Quaternion.identity);
+        int iconIndex = type * 2 + positive;
+        prop.GetComponent<Prop>().BuildProp(effect, propSetting.PropAnimations[iconIndex]);
+    }
+
+    private void UpdateTimer()
+    {
+        if (countdownTimer <= 0f && !endBattle)
+        {
+            countdownTimer = 0f;
             EndBattle();
         }
         else
         {
-            timer -= Time.deltaTime;
-            timer_text.text = ((int)timer).ToString();
+            countdownTimer -= Time.deltaTime;
+            timerText.text = ((int)countdownTimer).ToString();
         }
     }
 
@@ -46,39 +133,34 @@ public class BattleManager : MonoBehaviour
     {
         endBattle = true;
 
-        if (P1_score > P2_score)
-        {
+        GameManager.Instance.RecordWinner(playerScores);
+        SceneManager.LoadScene("Result");
+    }
 
-        }
-        if (P1_score < P2_score)
-        {
+    private void ResetBattle()
+    {
+        countdownTimer = maxTiming;
+        timerText.text = maxTiming.ToString();
+        ResetScore();
+    }
 
-        }
-        if (P1_score == P2_score)
+    private void ResetScore()
+    {
+        for (int id = 1; id <= playerNum; id++)
         {
-
+            playerScores[id - 1] = 0;
+            scoreTexts[id - 1].text = "0";
         }
     }
 
-    void ResetBattle()
+    public void ProjectileHit(int owner, int target)
     {
-        timer = maxTiming;
-        timer_text.text = ((int)timer).ToString();
-        ScoreChange(1, -P1_score);
-        ScoreChange(2, -P2_score);
+        playerScores[owner] += 100;
+        playerScores[target] -= 50;
     }
 
-    void ScoreChange(int Player, int AddScore)
+    public void AddPoint(int player, int point)
     {
-        if (Player == 1)
-        {
-            P1_score += AddScore;
-            P1_score_text.text = P1_score.ToString();
-        }
-        if (Player == 2)
-        {
-            P2_score += AddScore;
-            P2_score_text.text = P2_score.ToString();
-        }
+        playerScores[player] += point;
     }
 }

@@ -23,11 +23,12 @@ public class GameManager
         }
     }
 
-    public int player1Char, player2Char;
+    public int[] PlayerChar;
     public int Winner { get; private set; }
 
     private GameManager()
     {
+        PlayerChar = new int[2];
         ResetAllRecord();
         SceneManager.activeSceneChanged += OnSceneChange;
     }
@@ -40,15 +41,17 @@ public class GameManager
         }
         else if (to.name == "Battle")
         {
-            Debug.Log(player1Char.ToString() + ":" + player2Char.ToString());
-            if (player1Char == -1 || player2Char == -1)
+            foreach (int charId in PlayerChar)
             {
-                Debug.LogError("Character not determin!");
+                if (charId < 0)
+                {
+                    Debug.LogError("Someone didn't choose Character!");
+                }
             }
         }
         else if (to.name == "Result")
         {
-            if (Winner == 0)
+            if (Winner < 0)
             {
                 Debug.LogError("Winner not determin!");
             }
@@ -57,7 +60,30 @@ public class GameManager
 
     private void ResetAllRecord()
     {
-        player1Char = player2Char = -1;
-        Winner = 0;
+        for (int i = 0; i < PlayerChar.Length; i++)
+        {
+            PlayerChar[i] = -1;
+        }
+        Winner = -1;
+    }
+
+    public void ChooseCharacter(int id, int charID)
+    {
+        PlayerChar[id] = charID;
+    }
+
+    public void RecordWinner(int[] PlayerScores)
+    {
+        int maxScore = int.MinValue;
+        for (int id = 0; id < PlayerScores.Length; id++)
+        {
+            if (PlayerScores[id] > maxScore)
+            {
+                maxScore = PlayerScores[id];
+                Winner = id;
+            }
+        }
+
+        Debug.Log("Winner ID:" + Winner.ToString());
     }
 }

@@ -5,27 +5,53 @@ using UnityEngine;
 
 public class Microbe : MonoBehaviour
 {
+    private int id;
+
     public new Camera camera;
-    private Transform mask;
 
     public ControlSetting controlSetting;
     public MicrobeSetting microbeSetting;
 
     private Transform aim;
+    private Animator animator;
+
+    private Dictionary<EffectType, Effect> effectList;
 
     private Vector3 direction;
     private float fireCooldown;
 
-    // Start is called before the first frame update
-    void Start()
+    private float arenaRange;
+
+    private bool pause;
+    
+    private void Awake()
     {
-        aim = transform.GetChild(0);
-        mask = camera.transform.GetChild(0);
+        pause = true;
+        effectList = new Dictionary<EffectType, Effect>();
     }
 
-    // Update is called once per frame
+    private void Start()
+    {
+        aim = transform.GetChild(0);
+        arenaRange = GameObject.Find("BattleManager").GetComponent<BattleManager>().arenaSize;
+        animator = gameObject.GetComponent<Animator>();
+    }
+
+    public void Initialize(int id, ControlSetting controlSetting, MicrobeSetting microbeSetting)
+    {
+        this.id = id;
+        this.controlSetting = controlSetting;
+        this.microbeSetting = microbeSetting;
+
+        camera = GameObject.Find("CameraP" + id.ToString()).GetComponent<Camera>();
+
+        pause = false;
+    }
+
     private void Update()
     {
+        if (pause) return;
+
         GetDirectionInput();
         UpdateBodyRotation();
         Debug.DrawRay(transform.position, transform.up);
@@ -34,30 +60,45 @@ public class Microbe : MonoBehaviour
 
         UpdateCooldown();
         GetFireInput();
+
+        UpdateEffects();
     }
 
     private void FixedUpdate()
     {
-        transform.Translate(Vector3.up * microbeSetting.MoveSpeed * Time.fixedDeltaTime);
+        if (pause) return;
+
+        float coef = 1f;
+        if (GetEffect(EffectType.MoveSpeed, out bool positive, out float rate))
+        {
+            coef = positive ? 1f + rate : 1f - rate;
+        }
+
+        Vector3 oldPos = transform.position;
+        transform.Translate(Vector3.up * microbeSetting.MoveSpeed * coef * Time.fixedDeltaTime);
+        if (transform.position.magnitude >= arenaRange) transform.position = oldPos;
     }
 
     private void GetDirectionInput()
     {
-        direction = Vector3.zero;
         if (Input.GetKey(controlSetting.Up))
         {
+            direction.x = 0;
             direction.y += 1;
         }
         if (Input.GetKey(controlSetting.Down))
         {
+            direction.x = 0;
             direction.y -= 1;
         }
         if (Input.GetKey(controlSetting.Right))
         {
+            direction.y = 0;
             direction.x += 1;
         }
         if (Input.GetKey(controlSetting.Left))
         {
+            direction.y = 0;
             direction.x -= 1;
         }
 
@@ -77,15 +118,21 @@ public class Microbe : MonoBehaviour
 
     private void UpdateCooldown()
     {
-        if (fireCooldown < microbeSetting.FireCooldown)
+        if (fireCooldown < microbeSetting.ReloadSpeed)
         {
-            fireCooldown += Time.deltaTime;
+            float coef = 1f;
+            if (!GetEffect(EffectType.ReloadSpeed, out bool positive, out float rate))
+            {
+                coef = positive ? 1f + rate : 1f - rate;
+            }
+
+            fireCooldown += Time.deltaTime * coef;
         }
     }
 
     private void GetFireInput()
     {
-        if (Input.GetKey(controlSetting.Fire) && fireCooldown >= microbeSetting.FireCooldown)
+        if (Input.GetKey(controlSetting.Fire) && fireCooldown >= microbeSetting.ReloadSpeed)
         {
             Fire();
             fireCooldown = 0;
@@ -94,6 +141,63 @@ public class Microbe : MonoBehaviour
 
     private void Fire()
     {
-        Instantiate(microbeSetting.Projectile, transform.position, transform.rotation);
+        animator.Play("Fire");
+        GameObject projectile = Instantiate(microbeSetting.Projectile, transform.position + Vector3.forward, transform.rotation);
+        projectile.GetComponent<Projectile>().Owner = id;
+
+        float coef = 1f;
+        if (GetEffect(EffectType.ShootDistance, out bool positive, out float rate))
+        {
+            coef = positive ? 1f + rate : 1f - rate;
+        }
+
+        projectile.GetComponent<Projectile>().Distance *= coef;
+    }
+
+    public void ReceiveEffects(Effect effect)
+    {
+        Debug.Log(effect.Type.ToString() + ":" + effect.IsPositive.ToString()  + ":" + effect.Amount.ToString());
+
+        if (effect.Type == EffectType.Score)
+        {
+            int point = effect.IsPositive ? (int)effect.Amount : (int)-effect.Amount;
+            GameObject.Find("BattleManager").GetComponent<BattleManager>().AddPoint(id, point);
+            return;
+        }
+
+        effectList[effect.Type] = effect;
+    }
+
+    private void UpdateEffects()
+    {
+        List<EffectType> keys = new List<EffectType>(effectList.Keys);
+
+        foreach (EffectType key in keys)
+        {
+            if (effectList[key].RemainTiming <= 0f)
+            {
+                effectList.Remove(key);
+            }
+            else
+            {
+                effectList[key].RemainTiming -= Time.deltaTime;
+            }
+        }
+    }
+
+    private bool GetEffect(EffectType type, out bool isPositive, out float amount)
+    {
+        if (effectList.ContainsKey(EffectType.ShootDistance))
+        {
+            amount = effectList[EffectType.ShootDistance].Amount;
+            isPositive = effectList[EffectType.ShootDistance].IsPositive;
+            return true;
+        }
+        else
+        {
+            isPositive = true;
+            amount = 0;
+            return false;
+        }
     }
 }

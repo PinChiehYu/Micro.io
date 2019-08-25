@@ -1,0 +1,33 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9fed4ac80732f73458f9a5bf0f046781, type: 3}
+  m_Name: PropSetting
+  m_EditorClassIdentifier: 
+  Prefab: {fileID: 1444692030118802747, guid: 4a407af9645131241a3592ce885570c9, type: 3}
+  PropAnimations:
+  - {fileID: 7400000, guid: c333ba2c6e430e544b504621a8c99828, type: 2}
+  - {fileID: 7400000, guid: 37cb466e3c8eb604295a5d1d21045a2e, type: 2}
+  - {fileID: 7400000, guid: b644892f35d76354f8887263912f5077, type: 2}
+  - {fileID: 7400000, guid: f347c9c6353a2da4e8e644acff7948f6, type: 2}
+  - {fileID: 7400000, guid: e54761938a99a8b4ea8566210826714d, type: 2}
+  - {fileID: 7400000, guid: 612c12c87d6af96488619073d83ccbd5, type: 2}
+  - {fileID: 7400000, guid: 002289c023e397e4691831ef3ef2388c, type: 2}
+  - {fileID: 7400000, guid: 0425b5867efd7a64880cb26565e795ba, type: 2}
+  EffectRanges:
+  - Min: 0.2
+    Max: 0.4
+  - Min: 100
+    Max: 250
+  - Min: 0.2
+    Max: 0.5
+  - Min: 0.5
+    Max: 0.5

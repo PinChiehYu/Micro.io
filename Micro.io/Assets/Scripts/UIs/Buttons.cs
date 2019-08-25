@@ -10,6 +10,7 @@ public class Buttons : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        Debug.Log(GameObject.Find("Main Camera").GetComponent<Camera>().pixelHeight);
         btn = GetComponent<Button>();
         if (btn != null) btn.onClick.AddListener(btnClicked);
     }
